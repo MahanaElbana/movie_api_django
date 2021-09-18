@@ -228,17 +228,17 @@ class ReviewFilter2(generics.ListAPIView):
         return Review.objects.filter(watchlist = pk)
         
 
-##########################? --- searching  ------  ###########################      
-'''
-    --  case from filtering ---
- 1] -  pip install django-filter
- 2] - INSTALLED_APPS = ['django_filters',]
-
- [-- first-method --] 
-    - from rest_framework import filters
-    - filter_backends = [filters.SearchFilter]
-    - search_fields = ['title', 'platform__name']
-    - http://example.com/api/users?search=russell 
+##########################? --- searching  ------  #########################     
+'''                                                                        ##
+    --  case from filtering ---                                            ##   
+ 1] -  pip install django-filter                                           ##
+ 2] - INSTALLED_APPS = ['django_filters',]                                 ##    
+                                                                           ##
+ [-- first-method --]                                                      ##  
+    - from rest_framework import filters                                   ##
+    - filter_backends = [filters.SearchFilter]                             ##
+    - search_fields = ['title', 'platform__name']                          ##
+    - http://example.com/api/users?search=russell                          ##
 '''                                                                        ##
 class watchListsearching(generics.ListAPIView):                            ##         
     queryset = WatchList.objects.all()                                     ##      
