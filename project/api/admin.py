@@ -1,8 +1,10 @@
-from .models import Movie
+from .models import StreamPlatform ,WatchList ,Review
 from django.contrib import admin
 # Register your models here.
 
-admin.site.register(Movie)
+admin.site.register(StreamPlatform)
+admin.site.register(WatchList)
+admin.site.register(Review)
 
 """
 url :- 
@@ -44,4 +46,6 @@ types of views :-
         httpie
         thunder client   ==> package in vscode ==> from extensions
 https://pypi.org/project/httpie-django-auth/
+normaluser 
+superuser
 '''

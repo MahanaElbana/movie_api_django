@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'api',
     'rest_framework',
+    #for token 
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -81,8 +83,16 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
-
+###REST_FRAMEWORK
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        #'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
@@ -125,3 +135,74 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+'''
+ Autentication :- 
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+    ]
+}
+
+
+ ////////////////////////////
+ Http Headers  ==> from headers
+ Encode to Base64 format
+            first method 
+  key              value    
+  Authorization    Basic QWRtaW46RGphbmdvMTIz
+  https://www.base64encode.org/
+
+  //////////////////////////
+         second method 
+   Auth 
+   username   Admin
+   password   Django123
+
+
+'''
+
+"""
+ AUTH_USER_MODEL = 'Your app name.User'
+
+class RegisterSerializer(serializers.ModelSerializer):
+    password1 = serializers.CharField(write_only=True)
+
+    class Meta:
+      model = User
+      fields = ('first_name', 'last_name', 'email', 'password','password1',  'user_type',)
+
+    def validate(self, attr):
+       validate_password(attr['password'])
+       return attr
+
+    def create(self, validated_data):
+          user = User.objects.create(
+                username=validated_data['email'],
+                user_type=validated_data['user_type'],
+                email=validated_data['email'],
+                first_name=validated_data['first_name'],
+                last_name=validated_data['last_name'],
+
+                )
+        user.set_password(validated_data['password'])
+        user.save()
+
+
+
+       return user
+{
+    "username" :"aliuo",
+    "first_name" :"mklaliuod", 
+    "last_name" :"elaliuobnad",
+    "email" :"msualiuoi1@jadsndgo.com", 
+    "password" : "Django123",
+    "password1" :"Django123"
+}
+
+"""
