@@ -32,4 +32,27 @@ urlpatterns = [
     #{"username":"Admin","password":"Django123"}
     path('regestration/',restviews.regestration), 
     path('logout/',restviews.logout ,name="log_out"), 
+
+
+   ##########################? --- Filtering --- ###################################
+   #! the first method using name ==> string                                         #
+   #path('filtering/<str:username>/',restviews.UserReview.as_view() ,name="filter"), #
+                                                                                     #
+   #! the second method using fk ==> foreign key                                     #
+   #path('filtering/<int:username>/',restviews.UserReview.as_view() ,name="filter"), # 
+                                                                                     #   
+   #! the third method user as authenticated ==> user                                #                              
+   #path('filtering/',restviews.UserReview.as_view() ,name="filter"),                # 
+                                                                                     #     
+   #! the fourth method using get                                                    #
+   path('filtering/<str:username>/',restviews.UserReview.as_view() ,name="filter"),  #           
+                                                                                     # 
+   #! the fiveth method using get                                                    #
+   #path('filtering/',restviews.UserReview.as_view() ,name="filter"),  #             #
+                                                                                     #
+   ##########################? --- Filtering => second method --- ##################      #! the first method using name ==> string                                        #
+   path('filter2/<int:id>/',restviews.ReviewFilter2.as_view()),                      #
+                                                                                     #
+   ##########################? --- searching  ------  ###########################
+   path('search/',restviews.watchListsearching.as_view()),                                                                                        
   ]    

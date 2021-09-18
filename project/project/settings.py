@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'rest_framework',
     #for token 
     'rest_framework.authtoken',
+    #django-filter
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -87,12 +89,23 @@ DATABASES = {
 ###REST_FRAMEWORK
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.IsAuthenticated',
+        #'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
         #'rest_framework.authentication.TokenAuthentication',
-    ]
+    ],
+    ########## throttling ##########
+    'DEFAULT_THROTTLE_CLASSES': [
+       #'rest_framework.throttling.AnonRateThrottle',
+       # 'rest_framework.throttling.UserRateThrottle'
+    ],
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '4/day',
+        'user': '6/day',
+        'review':'6/day',
+        'review_':'2/day'
+    }
 }
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators

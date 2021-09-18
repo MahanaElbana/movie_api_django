@@ -1,4 +1,5 @@
 
+from django.contrib.auth.models import User
 from rest_framework.response import Response
 from rest_framework import serializers
 from rest_framework.serializers import Serializer
@@ -9,6 +10,12 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.decorators import api_view
 from .permission import IsAdminUserOrReadOnly, ReviewReadOnly
 from rest_framework.authtoken.models import Token
+from rest_framework.throttling import UserRateThrottle ,AnonRateThrottle 
+from .throttling import AnonaymousUserThrottle
+from rest_framework.throttling import ScopedRateThrottle
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters
+
 #! stream/movie_id/review
 #class ReviewList(mixins.ListModelMixin,mixins.CreateModelMixin,generics.GenericAPIView):
 #    queryset = Review.objects.all()
@@ -56,11 +63,16 @@ class ReviewCreate(generics.CreateAPIView):
        movie.save()
        serializer.save(watchlist = movie ,user_review =user)
 
+#! hhhhhhhhhhhhhh i am here simle 
 class RewviewApi(viewsets.ModelViewSet):
     queryset =  Review.objects.all()
     serializer_class = ReviewSerializer
     #permission_classes =(IsAdminUserOrReadOnly ,)
     permission_classes =(ReviewReadOnly , )
+    #throttle_classes = (AnonaymousUserThrottle,)
+    
+    throttle_classes = (ScopedRateThrottle,)
+    throttle_scope = 'review_'
 
 class StreamApi(viewsets.ModelViewSet):
     queryset = StreamPlatform.objects.all()
@@ -146,3 +158,104 @@ def logout(request):
         request.user.auth_token.delete()
         return Response("log out yes ")
     return Response("log out no ")    
+
+
+##########################? --- Filtering --- ####################################
+class UserReview(generics.ListAPIView):
+    serializer_class = ReviewSerializer
+
+    #! the first method using name ==> string 
+    # def get_queryset(self):
+    #     username = self.kwargs['username']
+    #     return Review.objects.filter(user_review__username=username)    
+    
+    #! the second method using fk ==> foreign key 
+    # def get_queryset(self):
+    #     username = self.kwargs['username']
+    #     return Review.objects.filter(user_review = username)
+    
+    #! the third method using user as authenticated ==> user
+    # def get_queryset(self):
+    #     user = self.request.user
+    #     print(user)  # pass user from authentication => Basic Auth
+    #     return Review.objects.filter(user_review = user) 
+
+    #! the fourth method using get
+    def get_queryset(self):
+        username = self.kwargs['username']
+        try:
+         user = User.objects.get(username=username )
+        except:
+            return Review.objects.all()
+        if user is not None:
+           return Review.objects.filter(user_review = user) 
+        else : return Review.objects.all()   
+
+    #! the fiveth method using user as authenticated ==> user
+    # def get_queryset(self):
+    #     '''Query Parameters
+    #            username   ----->   Admin'''
+    #     username = self.request.query_params.get('username',None)
+    #     #print(username)
+    #     if username is not None:
+    #         queryset = Review.objects.filter(user_review__username = username)
+    #         return queryset
+    #     else : 
+    #         return Review.objects.all()  
+
+##########################? --- Filtering => second method --- ####################       
+'''
+ *] -  https://django-filter.readthedocs.io/en/stable/
+ 1] -  pip install django-filter
+ 2] - INSTALLED_APPS = ['django_filters',]
+
+ [-- first-method --] 
+    - from django_filters.rest_framework import DjangoFilterBackend
+    - filter_backends = [DjangoFilterBackend]
+    - filterset_fields = ['user_review__username', 'rating']
+
+'''
+class ReviewFilter2(generics.ListAPIView):
+    serializer_class = ReviewSerializer
+
+    #! first method -- for filtering => using Query Parameters
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['user_review__username', 'rating']
+
+    def get_queryset(self):
+        #3
+        pk = self.kwargs['id']
+        return Review.objects.filter(watchlist = pk)
+        
+
+##########################? --- searching  ------  ###########################      
+'''
+    --  case from filtering ---
+ 1] -  pip install django-filter
+ 2] - INSTALLED_APPS = ['django_filters',]
+
+ [-- first-method --] 
+    - from rest_framework import filters
+    - filter_backends = [filters.SearchFilter]
+    - search_fields = ['title', 'platform__name']
+    - http://example.com/api/users?search=russell 
+'''                                                                        ##
+class watchListsearching(generics.ListAPIView):                            ##         
+    queryset = WatchList.objects.all()                                     ##      
+    serializer_class = WatchListSerializer                                 ##           
+                                                                           ##     
+    #! first method -- for filtering => using Query Parameters             ##               
+    filter_backends = [filters.SearchFilter]                               ##        
+    search_fields   = ['^title', '=platform__name']                        ## 
+                                                                           ## 
+##########################? --- ordering ------  ########################### 
+
+
+
+
+
+
+
+
+
+
