@@ -16,7 +16,7 @@ class StreamPlatform(models.Model):
         return self.name
 
 class WatchList(models.Model):
-    #film name
+    #film name 'avarage_rating','number_rating' ,'title' ,'storyline','active','created'
     avarage_rating = models.FloatField(default=0) 
     number_rating = models.IntegerField(default=0)
     title = models.CharField(max_length=50)
@@ -24,7 +24,7 @@ class WatchList(models.Model):
     #published or not 
     active =models.BooleanField(default=True)
     created =models.DateTimeField(auto_now_add=True)
-    platform = models.ForeignKey(StreamPlatform ,on_delete =models.CASCADE,related_name="watchList" )
+    platform = models.ForeignKey(StreamPlatform ,on_delete =models.CASCADE,related_name="watchListt")
       
     def __str__(self):
         return self.title

@@ -15,7 +15,8 @@ from .throttling import AnonaymousUserThrottle
 from rest_framework.throttling import ScopedRateThrottle
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters
-
+from .pagination  import watchListPNPagnation ,watchListLOPagnation ,watchListCRPagnation
+from rest_framework.renderers import JSONRenderer
 #! stream/movie_id/review
 #class ReviewList(mixins.ListModelMixin,mixins.CreateModelMixin,generics.GenericAPIView):
 #    queryset = Review.objects.all()
@@ -78,12 +79,25 @@ class StreamApi(viewsets.ModelViewSet):
     queryset = StreamPlatform.objects.all()
     serializer_class = StreamPlatformSerializer  
     
+    
 class WatchApi(viewsets.ModelViewSet):
     queryset = WatchList.objects.all()
     serializer_class = WatchListSerializer
 
+    #####*------------------  for pagination ---------------------- ######
+    #pagination_class = watchListPNPagnation
+    #pagination_class = watchListLOPagnation
+    pagination_class = watchListCRPagnation
+
+    #####*------------------  for ordering ---------------------- ########
+    #http://127.0.0.1:8899/movies/modelviewset/watchApi/?ordering=-created
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ['created']
 
 
+    #####* ------------------  for JSON ----------------------  ##########
+    #renderer_classes = [JSONRenderer]
+    
 
 '''
 #@api_view(['GET','POST'])
@@ -229,22 +243,22 @@ class ReviewFilter2(generics.ListAPIView):
         
 
 ##########################? --- searching  ------  #########################     
-'''                                                                        ##
-    --  case from filtering ---                                            ##   
- 1] -  pip install django-filter                                           ##
- 2] - INSTALLED_APPS = ['django_filters',]                                 ##    
-                                                                           ##
- [-- first-method --]                                                      ##  
-    - from rest_framework import filters                                   ##
-    - filter_backends = [filters.SearchFilter]                             ##
-    - search_fields = ['title', 'platform__name']                          ##
-    - http://example.com/api/users?search=russell                          ##
-'''                                                                        ##
-class watchListsearching(generics.ListAPIView):                            ##         
-    queryset = WatchList.objects.all()                                     ##      
-    serializer_class = WatchListSerializer                                 ##           
-                                                                           ##     
-    #! first method -- for filtering => using Query Parameters             ##               
+##*'''                                                                     ##
+##*    --  case from filtering ---                                         ##   
+##* 1] -  pip install django-filter                                        ##
+##* 2] - INSTALLED_APPS = ['django_filters',]                              ##    
+##*                                                                        ##
+##* [-- first-method --]                                                   ##  
+##*    - from rest_framework import filters                                ##
+##*    - filter_backends = [filters.SearchFilter]                          ##
+##*    - search_fields = ['title', 'platform__name']                       ##
+##*    - http://example.com/api/users?search=russell                       ##
+##*'''                                                                     ##
+class watchListsearching(generics.ListAPIView):                            ## 
+    queryset = WatchList.objects.all()                                     ## 
+    serializer_class = WatchListSerializer                                 ##     
+                                                                           ## 
+    #! first method -- for filtering => using Query Parameters             ## 
     filter_backends = [filters.SearchFilter]                               ##        
     search_fields   = ['^title', '=platform__name']                        ## 
                                                                            ## 

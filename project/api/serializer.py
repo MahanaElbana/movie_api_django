@@ -1,14 +1,16 @@
 
+from rest_framework.fields import ReadOnlyField
 from .models import StreamPlatform ,Review ,WatchList
 from rest_framework import serializers
-
+import datetime
 from django.contrib.auth.models import  User
 from django.contrib.auth.password_validation import validate_password 
 
 class WatchListSerializer(serializers.ModelSerializer):
-          class Meta :
-              model = WatchList
-              fields="__all__"
+    platform = serializers.CharField(source='platform.name')
+    class Meta :
+        model = WatchList
+        fields=('id','avarage_rating','number_rating' ,'title' ,'storyline','active','created','platform')
 
 
 class StreamPlatformSerializer(serializers.ModelSerializer):
@@ -30,7 +32,7 @@ class StreamPlatformSerializer(serializers.ModelSerializer):
   #watchList = serializers.StringRelatedField(many=True, read_only=True)
   #watchList = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
   #watchList = serializers.HyperlinkedRelatedField(many=True, read_only=True,view_name="movie_list_rest")
-
+    
   class Meta :
        model = StreamPlatform
        fields="__all__"

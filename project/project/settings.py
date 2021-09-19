@@ -105,7 +105,13 @@ REST_FRAMEWORK = {
         'user': '6/day',
         'review':'6/day',
         'review_':'2/day'
-    }
+    },
+    #'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    #'PAGE_SIZE': 2,
+    
+    #'DEFAULT_RENDERER_CLASSES': ('rest_framework.renderers.JSONRenderer',),
+  
+
 }
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -220,4 +226,5 @@ class RegisterSerializer(serializers.ModelSerializer):
 }
 
 """
+#pip install djangorestframework-simplejwt
 django_on_heroku.settings(locals())
